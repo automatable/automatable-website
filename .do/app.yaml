@@ -1,0 +1,26 @@
+name: launchpad
+region: lon
+services:
+  - name: web
+    github:
+      repo: automatable/launchpad
+      branch: main
+      deploy_on_push: true
+    build_command: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate --noinput
+    run_command: gunicorn launchpad.wsgi:application --bind 0.0.0.0:8080
+    http_port: 8080
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    instance_count: 1
+    envs:
+      - key: DJANGO_SECRET_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: DJANGO_ALLOWED_HOSTS
+        scope: RUN_TIME
+        value: "${APP_DOMAIN}"
+      - key: DEBUG
+        scope: RUN_TIME
+        value: "False"

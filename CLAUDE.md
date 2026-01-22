@@ -8,27 +8,54 @@ Automatable Launch Pad - A landing page for Automatable, specializing in AI-powe
 
 ## Tech Stack
 
-*To be defined* - This is a new project. Recommended stack based on organizational patterns:
-- **Frontend**: React + TypeScript + Vite
-- **Styling**: Tailwind CSS
-- **Components**: shadcn/ui
-- **Forms**: React Hook Form + Zod validation
+- **Backend**: Django 5.0+ with Gunicorn
+- **Database**: PostgreSQL (production), SQLite (development)
+- **Static Files**: WhiteNoise for serving static assets
+- **Deployment**: DigitalOcean App Platform
 
 ## Development Commands
 
-*To be added once project is set up*
-
 ```bash
-# Development server
-npm run dev
+# Create virtual environment
+python -m venv .venv && source .venv/bin/activate
 
-# Production build
-npm run build
+# Install dependencies
+pip install -r requirements.txt
 
-# Linting
-npm run lint
+# Run development server
+python manage.py runserver
+
+# Run migrations
+python manage.py migrate
+
+# Collect static files
+python manage.py collectstatic --noinput
+
+# Create superuser
+python manage.py createsuperuser
+
+# Run tests
+pytest
 ```
 
 ## Architecture
 
-*To be documented as the project develops*
+```
+launchpad/
+├── launchpad/          # Django project settings
+│   ├── settings.py     # Configuration (uses env vars)
+│   ├── urls.py         # URL routing
+│   └── wsgi.py         # WSGI entry point
+├── templates/          # HTML templates
+├── static/             # Static assets (CSS, JS, images)
+├── .do/app.yaml        # DigitalOcean App Platform config
+└── manage.py           # Django CLI
+```
+
+## Deployment
+
+App Platform auto-deploys on push to `main`. Configuration in `.do/app.yaml`.
+
+Environment variables required:
+- `DJANGO_SECRET_KEY` - Secret key (set in DO dashboard)
+- `DATABASE_URL` - PostgreSQL connection string (auto-set by DO)
