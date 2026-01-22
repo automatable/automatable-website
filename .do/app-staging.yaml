@@ -1,4 +1,4 @@
-name: automatable-website-testing
+name: automatable-website-staging
 region: lon
 services:
   - name: web
@@ -27,10 +27,10 @@ services:
         type: SECRET
       - key: DJANGO_ALLOWED_HOSTS
         scope: RUN_TIME
-        value: ".ondigitalocean.app,localhost"
+        value: ".automatable.agency,.ondigitalocean.app,localhost"
       - key: DEBUG
         scope: RUN_TIME
         value: "False"
       - key: ENVIRONMENT
         scope: RUN_TIME
-        value: "testing"
+        value: "staging"

@@ -67,7 +67,7 @@ gh pr create --base main --head staging \
 $(git log origin/main..origin/staging --oneline)
 
 ## Test plan
-- [ ] Verify staging site: https://automatable-website-testing-b2m3s.ondigitalocean.app
+- [ ] Verify staging site: https://staging.automatable.agency
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 BODY
