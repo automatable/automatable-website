@@ -1,12 +1,12 @@
 ---
 name: push-pr
-description: Push to staging and auto-create PR to main
-version: 1.0.0
+description: Push to staging, auto-create PR, and sync after merge
+version: 2.0.0
 ---
 
 # Push with Auto-PR
 
-Push local commits to staging and automatically create/update a PR to main.
+Push local commits to staging, automatically create/update a PR to main, and sync after merge.
 
 ## Usage
 
@@ -16,56 +16,77 @@ Push local commits to staging and automatically create/update a PR to main.
 
 ## Instructions
 
-When the user invokes `/push`:
+When the user invokes `/push-pr`:
 
-### 1. Execute the push
+### 1. Check current state
 
-**Default push** (no arguments):
+First, check if we're on staging and if there's an existing PR:
+
 ```bash
-git push
+CURRENT_BRANCH=$(git branch --show-current)
+PR_STATE=$(gh pr view --json state --jq '.state' 2>/dev/null || echo "NONE")
 ```
 
-**With arguments** (pass through to git):
+### 2. Handle merged PR (sync staging with main)
+
+If PR state is `MERGED`, sync staging with main to prevent the "compare" banner:
+
 ```bash
-git push $ARGS
+git fetch origin main
+git merge origin/main --no-edit
+git push origin staging
 ```
 
-### 2. Report the result
+Then report: "Synced staging with main after merge. Ready for new changes!"
 
-Show which branch was pushed and to where.
+**Skip to end** - no need to create a new PR.
 
-### 3. Auto-create PR (for staging branch)
+### 3. Push local changes
 
-If pushing to `staging` and the push succeeded:
+If there are commits to push:
 
-1. **Check for existing PR** from staging to main:
-   ```bash
-   gh pr list --base main --head staging --json number --jq 'length'
-   ```
+```bash
+git push origin staging
+```
 
-2. **If no PR exists**, create one:
-   ```bash
-   gh pr create --base main --head staging \
-     --title "$(git log -1 --format='%s')" \
-     --body "$(cat <<'BODY'
-   ## Changes
-   $(git log origin/main..origin/staging --oneline)
+Report which commits were pushed.
 
-   ---
-   *Auto-created by /push*
+### 4. Create or report PR
 
-   🤖 Generated with [Claude Code](https://claude.com/claude-code)
-   BODY
-   )"
-   ```
+**Check for existing open PR**:
+```bash
+gh pr list --base main --head staging --state open --json number --jq 'length'
+```
 
-3. **If PR already exists**, report its URL:
-   ```bash
-   gh pr view --json url --jq '.url'
-   ```
+**If no open PR exists**, create one:
+```bash
+gh pr create --base main --head staging \
+  --title "$(git log -1 --format='%s')" \
+  --body "$(cat <<'BODY'
+## Changes
+$(git log origin/main..origin/staging --oneline)
+
+## Test plan
+- [ ] Verify staging site: https://staging.automatable.agency
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+BODY
+)"
+```
+
+**If PR already exists**, report its URL:
+```bash
+gh pr view --json url --jq '.url'
+```
+
+### 5. Remind about post-merge sync
+
+After reporting the PR, remind the user:
+
+> "After merging, run `/push-pr` again to sync staging with main."
 
 ## Safety
 
-- Never use `--force` on main/master unless the user explicitly requests it
-- Warn if pushing to a protected branch with force
-- Show the commit range being pushed before executing
+- Never use `--force` unless explicitly requested
+- Only operates on the staging branch
+- Sync operation uses `--no-edit` to avoid interactive prompts

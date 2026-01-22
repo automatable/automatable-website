@@ -80,9 +80,8 @@ automatable-website/
 ├── templates/              # HTML templates
 ├── static/                 # Static assets (CSS, JS, images)
 ├── tests/                  # Pytest test suite
-├── .github/workflows/      # GitHub Actions CI
 ├── .do/app.yaml            # Production app config
-├── .do/app-testing.yaml    # Testing app config
+├── .do/app-staging.yaml    # Staging app config
 └── manage.py               # Django CLI
 ```
 
@@ -92,24 +91,19 @@ automatable-website/
 | Branch | Deploys To | URL |
 |--------|------------|-----|
 | `main` | Production | https://automatable.agency |
-| `staging` | Testing | https://automatable-website-testing-b2m3s.ondigitalocean.app |
+| `staging` | Staging | https://staging.automatable.agency |
 
 ### Workflow
 ```
-feature/* → PR to staging → CI tests → merge → auto-deploy to testing
-                                                      ↓
-                                               manual testing
-                                                      ↓
-                         PR from staging to main → merge → auto-deploy to production
+feature/* → PR to staging → merge → auto-deploy to staging
+                                           ↓
+                                    verify on staging
+                                           ↓
+              PR from staging to main → merge → auto-deploy to production
 ```
 
-### CI Pipeline
-GitHub Actions runs on PRs and pushes to `main` and `staging`:
-- `python manage.py check --deploy` (Django deployment checks)
-- `pytest` (test suite)
-
 ### Auto-Deploy
-App Platform auto-deploys on every push. Configuration in `.do/app.yaml` (production) and `.do/app-testing.yaml` (testing).
+App Platform auto-deploys on every push. Configuration in `.do/app.yaml` (production) and `.do/app-staging.yaml` (staging).
 
 ### Environment Variables
 | Variable | Scope | Description |
@@ -135,13 +129,13 @@ doctl apps create-deployment 16c55ee6-8e1d-4036-a26f-ba5d4130eb9e --force-rebuil
 doctl apps spec get 16c55ee6-8e1d-4036-a26f-ba5d4130eb9e
 doctl apps update 16c55ee6-8e1d-4036-a26f-ba5d4130eb9e --spec .do/app.yaml
 
-# Testing app (8abcf726-f441-47ac-ad0c-602ece882683)
+# Staging app (8abcf726-f441-47ac-ad0c-602ece882683)
 doctl apps list-deployments 8abcf726-f441-47ac-ad0c-602ece882683
 doctl apps logs 8abcf726-f441-47ac-ad0c-602ece882683
 doctl apps logs 8abcf726-f441-47ac-ad0c-602ece882683 --type build
 doctl apps create-deployment 8abcf726-f441-47ac-ad0c-602ece882683 --force-rebuild
 doctl apps spec get 8abcf726-f441-47ac-ad0c-602ece882683
-doctl apps update 8abcf726-f441-47ac-ad0c-602ece882683 --spec .do/app-testing.yaml
+doctl apps update 8abcf726-f441-47ac-ad0c-602ece882683 --spec .do/app-staging.yaml
 ```
 
 ### Important Notes
@@ -167,11 +161,11 @@ doctl apps update 8abcf726-f441-47ac-ad0c-602ece882683 --spec .do/app-testing.ya
 - **Branch**: `main`
 - **URL**: https://automatable.agency
 
-### Testing App
+### Staging App
 - **App ID**: `8abcf726-f441-47ac-ad0c-602ece882683`
-- **App Name**: `automatable-website-testing`
+- **App Name**: `automatable-website-staging`
 - **Branch**: `staging`
-- **URL**: https://automatable-website-testing-b2m3s.ondigitalocean.app
+- **URL**: https://staging.automatable.agency
 
 ### Common
 - **Project**: Automatable (`f7e22f1b-d2e8-4e06-8bc8-02212e9365f6`)

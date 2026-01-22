@@ -167,7 +167,7 @@ doctl apps create-deployment <APP_ID> --force-rebuild
 doctl apps update 16c55ee6-8e1d-4036-a26f-ba5d4130eb9e --spec .do/app.yaml
 
 # Testing
-doctl apps update 8abcf726-f441-47ac-ad0c-602ece882683 --spec .do/app-testing.yaml
+doctl apps update 8abcf726-f441-47ac-ad0c-602ece882683 --spec .do/app-staging.yaml
 ```
 
 > **Warning**: This clears the `DJANGO_SECRET_KEY`. See [Fixing SECRET_KEY](#fixing-secret_key-after-spec-update) below.
@@ -265,7 +265,7 @@ git checkout -b staging
 git push -u origin staging
 
 # Create the app
-doctl apps create --spec .do/app-testing.yaml --wait
+doctl apps create --spec .do/app-staging.yaml --wait
 ```
 
 ### Assign to Project
@@ -298,5 +298,5 @@ doctl apps update $APP_ID --spec <(doctl apps spec get $APP_ID | sed "s/type: SE
 | `DJANGO_SECRET_KEY` | RUN_AND_BUILD_TIME | Django secret key (required) |
 | `DJANGO_ALLOWED_HOSTS` | RUN_TIME | Comma-separated allowed hosts |
 | `DEBUG` | RUN_TIME | `True` or `False` |
-| `ENVIRONMENT` | RUN_TIME | `production` or `testing` |
+| `ENVIRONMENT` | RUN_TIME | `production` or `staging` |
 | `DATABASE_URL` | RUN_TIME | Database connection string (optional) |
