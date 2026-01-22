@@ -29,7 +29,7 @@ PR_STATE=$(gh pr view --json state --jq '.state' 2>/dev/null || echo "NONE")
 
 ### 2. Handle merged PR (sync staging with main)
 
-If PR state is `MERGED`, sync staging with main to prevent the "compare" banner:
+If PR state is `MERGED`, sync staging with main:
 
 ```bash
 git fetch origin main
