@@ -2,6 +2,30 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Setup
+
+### Automatic (Claude Code)
+When you start a Claude Code session, git hooks are automatically installed via the session-start hook.
+
+### Manual Setup
+```bash
+# Clone the repo (checks out staging by default)
+git clone https://github.com/automatable/launchpad.git
+cd launchpad
+
+# Install git hooks (prevents accidental commits to main)
+./scripts/install-hooks.sh
+
+# Create virtual environment
+python -m venv .venv && source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run tests to verify setup
+pytest
+```
+
 ## Project Overview
 
 Automatable Launch Pad - A landing page for Automatable, specializing in AI-powered business automation solutions.

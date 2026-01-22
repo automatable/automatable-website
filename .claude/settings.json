@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "session-start": [
+      {
+        "command": "./scripts/install-hooks.sh",
+        "description": "Install git hooks for branch protection"
+      }
+    ]
+  }
+}
