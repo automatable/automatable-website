@@ -1,24 +1,17 @@
 ---
-name: push
-description: Push commits to remote repository
-version: 2.0.0
+name: push-pr
+description: Push to staging and auto-create PR to main
+version: 1.0.0
 ---
 
-# Git Push
+# Push with Auto-PR
 
-Push local commits to the remote repository, and optionally create a PR.
+Push local commits to staging and automatically create/update a PR to main.
 
 ## Usage
 
 ```
-/push
-```
-
-Or with options:
-
-```
-/push --force
-/push origin feature-branch
+/push-pr
 ```
 
 ## Instructions
