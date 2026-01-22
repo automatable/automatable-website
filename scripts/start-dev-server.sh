@@ -15,7 +15,7 @@ fi
 
 # Start Django in background
 cd "$PROJECT_DIR"
-DEBUG=True nohup .venv/bin/python manage.py runserver $PORT > /tmp/django-dev-server.log 2>&1 &
+nohup .venv/bin/python manage.py runserver $PORT > /tmp/django-dev-server.log 2>&1 &
 
 # Wait briefly and verify it started
 sleep 2
