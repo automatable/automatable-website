@@ -25,7 +25,7 @@ services:
         type: SECRET
       - key: DJANGO_ALLOWED_HOSTS
         scope: RUN_TIME
-        value: "${APP_DOMAIN},automatable.agency,www.automatable.agency"
+        value: ".automatable.agency,localhost"
       - key: DEBUG
         scope: RUN_TIME
         value: "False"
