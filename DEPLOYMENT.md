@@ -27,6 +27,21 @@ Production: 16c55ee6-8e1d-4036-a26f-ba5d4130eb9e
 Testing:    8abcf726-f441-47ac-ad0c-602ece882683
 ```
 
+### Branch Protection
+
+The repository is configured to enforce the staging-first workflow:
+
+| Branch | Default | Protection |
+|--------|---------|------------|
+| `staging` | ✅ Yes | None (accepts direct pushes and PRs) |
+| `main` | No | Requires PR + CI must pass |
+
+**What this means:**
+- `git clone` checks out `staging` by default
+- New PRs target `staging` by default
+- Direct pushes to `main` are blocked
+- PRs to `main` require the CI workflow to pass
+
 ---
 
 ## Day-to-Day Development Workflow
@@ -50,7 +65,8 @@ pytest -v
 ### 3. Push and Create PR to Staging
 ```bash
 git push -u origin feature/my-new-feature
-gh pr create --base staging --title "Add my new feature"
+gh pr create --title "Add my new feature"
+# Note: PRs target staging by default (no --base needed)
 ```
 
 ### 4. CI Runs Automatically
