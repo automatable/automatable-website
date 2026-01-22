@@ -1,4 +1,4 @@
-name: launchpad
+name: automatable-launchpad
 region: lon
 services:
   - name: web
