@@ -1,15 +1,10 @@
-name: automatable-website-production
+name: automatable-website-testing
 region: lon
-domains:
-  - domain: automatable.agency
-    type: PRIMARY
-  - domain: www.automatable.agency
-    type: ALIAS
 services:
   - name: web
     github:
       repo: automatable/launchpad
-      branch: main
+      branch: staging
       deploy_on_push: true
     build_command: |
       pip install -r requirements.txt
@@ -32,10 +27,10 @@ services:
         type: SECRET
       - key: DJANGO_ALLOWED_HOSTS
         scope: RUN_TIME
-        value: ".automatable.agency,.ondigitalocean.app,localhost"
+        value: ".ondigitalocean.app,localhost"
       - key: DEBUG
         scope: RUN_TIME
         value: "False"
       - key: ENVIRONMENT
         scope: RUN_TIME
-        value: "production"
+        value: "testing"
