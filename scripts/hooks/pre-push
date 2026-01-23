@@ -23,8 +23,8 @@ while read local_ref local_sha remote_ref remote_sha; do
             echo "⚠️  You're about to push directly to '$branch'"
             echo ""
             echo "This branch is protected. The recommended workflow is:"
-            echo "  1. Push to staging first"
-            echo "  2. Create a PR from staging to main"
+            echo "  1. Create a feature branch"
+            echo "  2. Push and create a PR to main (preview app auto-deploys)"
             echo ""
 
             # Check if we're in an interactive terminal
