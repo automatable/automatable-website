@@ -1,0 +1,36 @@
+name: automatable-website-preview
+region: lon
+services:
+  - name: web
+    github:
+      repo: automatable/automatable-website
+      branch: main  # Action will override this to PR branch
+      deploy_on_push: false  # Managed by GitHub Actions
+    build_command: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate --noinput
+    run_command: gunicorn automatable_website.wsgi:application --bind 0.0.0.0:8080
+    http_port: 8080
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    instance_count: 1
+    health_check:
+      http_path: /health/
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: DJANGO_SECRET_KEY
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+      - key: DJANGO_ALLOWED_HOSTS
+        scope: RUN_TIME
+        value: ".ondigitalocean.app,localhost"
+      - key: DEBUG
+        scope: RUN_TIME
+        value: "False"
+      - key: ENVIRONMENT
+        scope: RUN_TIME
+        value: "preview"
