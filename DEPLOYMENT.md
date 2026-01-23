@@ -107,26 +107,24 @@ Visit https://automatable.agency to confirm the deployment.
 
 ### GitHub Actions
 
-**CI Workflow (`.github/workflows/ci.yml`)**
-Runs on all PRs and pushes to `main`:
-1. Checkout code
-2. Set up Python 3.12
-3. Install dependencies
-4. Run Django deployment checks
-5. Collect static files
-6. Run pytest
-
 **Preview Deploy (`.github/workflows/preview-deploy.yml`)**
-Runs when a PR is opened/updated:
+Runs when a PR to `main` is opened/updated:
 1. Deploy ephemeral preview app to DigitalOcean
 2. Post preview URL as PR comment
 
 **Preview Cleanup (`.github/workflows/preview-cleanup.yml`)**
-Runs when a PR is closed:
+Runs when a PR to `main` is closed:
 1. Delete the preview app
 
 ### DigitalOcean Auto-Deploy
 Production has `deploy_on_push: true`, so merges to `main` trigger automatic deployments.
+
+### Local Testing
+Run tests locally before pushing:
+```bash
+pytest -v
+python manage.py check --deploy
+```
 
 ---
 
