@@ -98,10 +98,50 @@ After CI passes, preview is verified, and PR is approved:
 gh pr merge --squash
 ```
 
-The preview app is automatically deleted and production is deployed.
+The preview app is automatically deleted and production deployment begins.
 
-### 7. Verify Production
-Visit https://automatable.agency to confirm the deployment.
+### 7. Monitor Production Deployment
+Track the deployment progress:
+```bash
+# Quick status check
+doctl apps list-deployments 16c55ee6-8e1d-4036-a26f-ba5d4130eb9e --format ID,Phase,Progress | head -1
+
+# Detailed progress (shows build/deploy steps)
+doctl apps list-deployments 16c55ee6-8e1d-4036-a26f-ba5d4130eb9e --output json | jq '.[0] | {
+  phase,
+  progress: .progress.success_steps + "/" + (.progress.total_steps|tostring),
+  cause: .cause[0:60],
+  started: .created_at,
+  finished: .updated_at
+}'
+
+# Watch logs during deployment
+doctl apps logs 16c55ee6-8e1d-4036-a26f-ba5d4130eb9e --type deploy --follow
+```
+
+**Deployment phases:**
+| Phase | Meaning |
+|-------|---------|
+| `PENDING_BUILD` | Queued, waiting to start |
+| `BUILDING` | Building Docker image |
+| `PENDING_DEPLOY` | Build complete, deploying |
+| `DEPLOYING` | Rolling out new containers |
+| `ACTIVE` | ✅ Deployment successful |
+| `ERROR` | ❌ Deployment failed (auto-rollback) |
+
+Typical deployment takes **1-2 minutes**.
+
+### 8. Verify Production
+Confirm the deployment is working:
+```bash
+# Check homepage
+curl -s -o /dev/null -w "%{http_code}" https://automatable.agency/
+
+# Check health endpoint (requires probe user-agent)
+curl -s -A "kube-probe/1.0" https://automatable.agency/health/
+```
+
+Or visit https://automatable.agency in your browser.
 
 ---
 
